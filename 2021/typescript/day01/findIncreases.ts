@@ -11,7 +11,7 @@ const file = fs.readFileSync('./input/testInput.csv','utf8');
 
 
 // doing the same on one line - wowzer
-const depthArray = file.split("\n").map((val1) => Boolean(val1) ? Number(val1):null).filter((val2) => Boolean(val2)) as number[] 
+const depthArray = file.split("\n").map(val1 => Boolean(val1) ? Number(val1) : null).filter(val2 => Boolean(val2)) as number[] 
 
 console.log(depthArray)
 
