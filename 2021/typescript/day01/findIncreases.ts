@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 
-const file = fs.readFileSync('./input/testInput.csv','utf8');
+const file = fs.readFileSync('./input/depths.csv','utf8');
 
 // splitting text and mapping to Number and filtering out bad inputs
-// const depthArray = file.split("\n").map((line)=>{
-//   if(Boolean(line)){
-//     return(Number(line))
+// const depthArray = file.split("\n").map((val1)=>{
+//   if(Boolean(val1)){
+//     return(Number(val1))
 //   }
-// }).filter((line)=>Boolean(line)) as number[] 
+// }).filter((val2)=>Boolean(val2)) as number[] 
 
 
 // doing the same on one line - wowzer
