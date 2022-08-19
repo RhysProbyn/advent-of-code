@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 const file = fs.readFileSync('./input/testInput.csv','utf8');
-console.log(typeof(NaN))
+console.log(Boolean(NaN))
 
 // splitting text and mapping to Number and filtering out bad inputs
 // const depthArray = file.split("\n").map((val1)=>{
@@ -12,7 +12,7 @@ console.log(typeof(NaN))
 
 
 // doing the same on one line - wowzer
-const depthArray = file.split("\n").map(val1 => Boolean(val1) ? Number(val1) : NaN).filter((val2) => !isNaN(val2))
+const depthArray = file.split("\n").map(parseFloat).filter(num => !isNaN(num))
 
 console.log(depthArray)
 
