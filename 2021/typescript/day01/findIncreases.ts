@@ -3,13 +3,10 @@ import * as fs from "fs";
 const file = fs.readFileSync("./input/depths.csv", "utf8");
 
 // splitting text and mapping to Number and filtering out bad inputs
-// doing on one line - wowzer
 const depthArray = file
   .split("\n")
   .map(parseFloat)
   .filter((num) => !isNaN(num));
-
-// console.log(depthArray)
 
 const findIncreases = (array: number[]) => {
   let increases = 0;
