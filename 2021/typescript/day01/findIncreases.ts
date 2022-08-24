@@ -1,28 +1,27 @@
-import * as fs from 'fs';
+import * as fs from "fs";
 
-const file = fs.readFileSync('./input/testInput.csv','utf8');
-console.log(Boolean(NaN))
+const file = fs.readFileSync("./input/depths.csv", "utf8");
 
 // splitting text and mapping to Number and filtering out bad inputs
-// const depthArray = file.split("\n").map((val1)=>{
-//   if(Boolean(val1)){
-//     return(Number(val1))
-//   }
-// }).filter((val2)=>Boolean(val2)) as number[] 
+// doing on one line - wowzer
+const depthArray = file
+  .split("\n")
+  .map(parseFloat)
+  .filter((num) => !isNaN(num));
 
+// console.log(depthArray)
 
-// doing the same on one line - wowzer
-const depthArray = file.split("\n").map(parseFloat).filter(num => !isNaN(num))
-
-console.log(depthArray)
-
-let increases = 0
-
-for (let index = 1; index < depthArray.length; index++) {
-  const previousItem = depthArray[index-1]
-  if (previousItem < depthArray[index]) {
-    increases += 1
+const findIncreases = (array: number[]) => {
+  let increases = 0;
+  let previousNumber = array[0];
+  for (let index = 1; index < array.length; index++) {
+    const currentNumber = array[index];
+    if (previousNumber < currentNumber) {
+      increases += 1;
+    }
+    previousNumber = currentNumber;
   }
-}
+  return increases;
+};
 
-console.log(increases)
+console.log(findIncreases(depthArray) + " increases in depth");
