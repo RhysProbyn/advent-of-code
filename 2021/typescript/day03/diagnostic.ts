@@ -1,15 +1,20 @@
 import * as fs from "fs";
 
-const file = fs.readFileSync("./input.txt", "utf8");
+const inputFile = (arg: string) => {
+  if (Boolean(arg)) {
+    return arg;
+  } else {
+    throw new Error("no input file");
+  }
+};
 
+const file = fs.readFileSync(inputFile(process.argv[2]), "utf8");
 const report = file.split("\n").map((line) => line.split(""));
 
 // transposing the matrix makes it easier to find most common bit in a column
 const transposeMatrix = (matrix: any[][]) =>
-  matrix[0].map((column: any, columnIndex: number) => {
-    return matrix.map(
-      (row: any, rowIndex: number) => matrix[rowIndex][columnIndex]
-    );
+  matrix[0].map((_, columnIndex) => {
+    return matrix.map((_, rowIndex) => matrix[rowIndex][columnIndex]);
   });
 
 // interface keeps typescript happy when creating an object with assignments
@@ -26,7 +31,7 @@ const mostCommonBit = (row: string[]) => {
     "1": 0,
   };
   row.map((bit) => (bitCount[bit] += 1));
-  return bitCount["0"] >= bitCount["1"] ? "0" : "1";
+  return bitCount["0"] > bitCount["1"] ? "0" : "1";
 };
 
 const leastCommonBit = (row: string[]) => {
@@ -57,10 +62,20 @@ const filterReport = (matrix: string[][], filterFunc: any) => {
 
 // parseInt can take an arg setting base
 const findGammaRate = (matrix: string[][]) =>
-  parseInt(matrix.map((col: string[]) => mostCommonBit(col)).join(""), 2);
+  parseInt(
+    transposeMatrix(matrix)
+      .map((col: string[]) => mostCommonBit(col))
+      .join(""),
+    2
+  );
 
 const findEpsilonRate = (matrix: string[][]) =>
-  parseInt(matrix.map((col: string[]) => leastCommonBit(col)).join(""), 2);
+  parseInt(
+    transposeMatrix(matrix)
+      .map((col: string[]) => leastCommonBit(col))
+      .join(""),
+    2
+  );
 
 const findOxygenRating = (matrix: string[][]) =>
   parseInt(filterReport(matrix, mostCommonBit).join(""), 2);
