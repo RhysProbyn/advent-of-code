@@ -4,7 +4,7 @@ const inputFile = (arg: string) => {
   if (Boolean(arg)) {
     return arg;
   } else {
-    throw new Error("no input file");
+    throw new Error("no input file specified");
   }
 };
 
