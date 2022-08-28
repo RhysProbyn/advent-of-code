@@ -86,7 +86,7 @@ lines.map((line) => {
 });
 let dangerPoints = 0;
 oceanFloor.map((yCoord) =>
-  yCoord.map((xCoord) => (xCoord >= 2 ? dangerPoints++ : null))
+  yCoord.map((xCoord) => (xCoord >= 2 ? dangerPoints++ : undefined))
 );
 console.log(dangerPoints + " points 2 or greater");
 // not very functional today
