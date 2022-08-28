@@ -20,9 +20,10 @@ interface line {
   startPoint: point;
   endPoint: point;
 }
-// console.log(input);
+
 let xVals: number[] = [];
 let yVals: number[] = [];
+
 const lines = input
   .map((fileLine) => fileLine.split(" -> "))
   .map((line) =>
@@ -72,19 +73,14 @@ lines.map((line) => {
   } else {
     let yVal = startY;
     let xVal = startX;
+    const xIter = startX < endX ? 1 : -1;
+    const yIter = startY < endY ? 1 : -1;
+
     for (let i = 0; i <= Math.abs(startX - endX); i++) {
       // console.log(`setting (${xVal},${yVal}) to ${oceanFloor[yVal][xVal] + 1}`);
       oceanFloor[yVal][xVal]++;
-      if (startX < endX) {
-        xVal++;
-      } else {
-        xVal--;
-      }
-      if (startY < endY) {
-        yVal++;
-      } else {
-        yVal--;
-      }
+      xVal += xIter;
+      yVal += yIter;
     }
   }
 });
@@ -93,3 +89,4 @@ oceanFloor.map((yCoord) =>
   yCoord.map((xCoord) => (xCoord >= 2 ? dangerPoints++ : null))
 );
 console.log(dangerPoints + " points 2 or greater");
+// not very functional today
