@@ -21,30 +21,36 @@ const handleCycle = (day: number) => {
 };
 
 const findNumberOfLaternfish = (iterations: number) => {
-  // let updatedStateArray = initialState.map((val) => [val, iterations]);
-  // // console.log(updatedStateArray);
+  let updatedStateArray = initialState.map((val) => [val, 0]);
+  // console.log(updatedStateArray);
+  // console.log(updatedStateArray);
 
-  // let total = 0;
-  // let totalNumberOfArrays = updatedStateArray.length;
-  // for (let j = 0; j < totalNumberOfArrays; j++) {
-  //   let updatedState = [updatedStateArray[j][0]];
-  //   const subIterations = updatedStateArray[j][1];
-  //   for (let i = 0; i < subIterations; i++) {
-  //     updatedState = updatedState.flatMap(handleCycle);
-  //     const stateLength = updatedState.length;
-  //     const firstHalf = updatedState.slice(0, stateLength / 2);
-  //     if (stateLength > 3) {
-  //       const updatedStateAdds = updatedState.map((val) => [
-  //         val,
-  //         iterations - i,
-  //       ]);
-  //       updatedStateArray = updatedStateArray.concat(updatedStateAdds);
-  //       totalNumberOfArrays += stateLength;
-  //       console.log(updatedStateArray);
-  //     }
-  //   }
-  //   total += updatedState.length;
-  // }
+  let total = 0;
+  let totalNumberOfArrays = updatedStateArray.length;
+  let updatedState = [updatedStateArray[0][0]];
+  for (let j = 0; j < totalNumberOfArrays; j++) {
+    let subIterations = updatedStateArray[j][1];
+    for (let i = subIterations; i < iterations; i++) {
+      updatedState = updatedState.flatMap(handleCycle);
+      const stateLength = updatedState.length;
+      // console.log(stateLength);
+
+      if (stateLength > 3) {
+        console.log("i", i);
+
+        const updatedStateAdds = updatedState.map((val) => [val, i]);
+        updatedStateArray = updatedStateArray.concat(updatedStateAdds);
+        totalNumberOfArrays += stateLength - 1;
+        // console.log(updatedStateArray);
+        // console.log("j", j);
+        total += updatedState.length;
+
+        break;
+      }
+    }
+    console.log(updatedState);
+  }
+  total += updatedState.length;
   return total;
 };
 
