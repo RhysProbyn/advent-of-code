@@ -20,6 +20,5 @@ for (let i = 0; i < iterations; i++) {
   const zeroAge = ageCount.shift();
   ageCount[8] = zeroAge;
   ageCount[6] += zeroAge;
-  // console.log(i);
 }
 console.log(ageCount.reduce((total, val) => total + val));
