@@ -25,7 +25,7 @@ function part2(positionArray: number[]) {
   for (let i = 0; i < Math.max(...positionArray); i++) {
     moves.push(
       positionArray
-        .map((position, index) => {
+        .map((position) => {
           const distance = Math.abs(position - i);
           let fuel = 0;
           for (let j = 0; j <= distance; j++) {
