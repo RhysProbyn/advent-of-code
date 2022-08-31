@@ -27,7 +27,6 @@ function part1(entry: string[][]) {
 
 function part2(entry: string[][]) {
   const signals = entry[0];
-  const readings = entry[1];
   const wireMap = new Map();
   const origMap: Map<string, string> = new Map();
   for (const signal of signals) {
@@ -41,14 +40,23 @@ function part2(entry: string[][]) {
       wireMap.set(wireLen, [wires]);
     }
   }
-  const len2: string[] = wireMap.get(2)[0];
-  const len3: string[] = wireMap.get(3)[0];
-  const len4: string[] = wireMap.get(4)[0];
-  const len7: string[] = wireMap.get(7)[0];
-  for (const len3char of len3) {
+  const digit1: string[] = wireMap.get(2)[0];
+  const digit7: string[] = wireMap.get(3)[0];
+  const digit4: string[] = wireMap.get(4)[0];
+  const digit8: string[] = wireMap.get(7)[0];
+
+  let digit0: string[];
+  let digit2: string[];
+  let digit3: string[] = [];
+  let digit5: string[];
+  let digit6: string[];
+  let digit9: string[];
+
+  // finding original a
+  for (const len3char of digit7) {
     // console.log(signal);
-    if (!len2.includes(len3char)) {
-      console.log("setting a", len3char);
+    if (!digit1.includes(len3char)) {
+      // console.log("setting a", len3char);
 
       origMap.set("a", len3char);
       break;
@@ -57,109 +65,75 @@ function part2(entry: string[][]) {
   }
   // finding the original a, b and e segments
   for (const len5 of wireMap.get(5)) {
-    const is3 = len2.every((len2char) => len5.includes(len2char)); // if true this is a 3 digit
+    // if true this is a 3 digit
+    const is3 = digit1.every((len2char) => len5.includes(len2char));
 
     if (is3) {
-      for (const len4char of len4) {
+      digit3 = len5;
+      for (const len4char of digit4) {
         if (!len5.includes(len4char)) {
           origMap.set("b", len4char);
-          console.log("setting b", len4char);
+          // console.log("setting b", len4char);
+        } else if (!digit1.includes(len4char)) {
+          origMap.set("d", len4char);
+          // console.log("setting d", len4char);
         }
       }
     }
   }
   for (const len5 of wireMap.get(5)) {
-    const is3 = len2.every((len2char) => len5.includes(len2char));
-
     if (len5.includes(origMap.get("b"))) {
       // this must be digit 5
-
-      for (const len7char of len7) {
+      digit5 = len5;
+      for (const len7char of digit8) {
         if (!len5.includes(len7char)) {
-          if (len2.includes(len7char)) {
+          if (digit1.includes(len7char)) {
             origMap.set("c", len7char);
-            console.log("setting c", len7char);
+            // console.log("setting c", len7char);
           }
         }
       }
-      for (const len2char of len2) {
+      for (const len2char of digit1) {
         if (len5.includes(len2char)) {
           origMap.set("f", len2char);
-          console.log("setting f", len2char);
+          // console.log("setting f", len2char);
         }
       }
     }
   }
   for (const len5 of wireMap.get(5)) {
-    const is3 = len2.every((len2char) => len5.includes(len2char)); // if true this is a 3 digit
+    const is3 = digit1.every((len2char) => len5.includes(len2char));
+    // looping back through 5s to find e
 
     if (!is3) {
-      // console.log(len5);
-
+      // ignoring 3, we know 5 has original "b" and we ignore that to find 2
       if (!len5.includes(origMap.get("b"))) {
-        for (const len5_2 of wireMap.get(5)) {
-          const is3_2 = len2.every((len2char) => len5_2.includes(len2char));
-          if (is3_2) {
-            for (const len5char of len5) {
-              if (!len5_2.includes(len5char)) {
-                // console.log(len5char);
-
-                origMap.set("e", len5char);
-                console.log("setting e", len5char);
-                break;
-              }
-            }
+        // what is in 3 that is not in 2... "e"
+        for (const len5char of len5) {
+          if (!digit3.includes(len5char)) {
+            origMap.set("e", len5char);
+            // console.log("setting e", len5char);
+            break;
           }
-          // console.log("setting b");
         }
       }
     }
   }
   const existingMaps = Array.from(origMap.values());
-  for (const len4char of len4) {
-    if (!existingMaps.includes(len4char)) {
-      origMap.set("d", len4char);
-      console.log("setting d", len4char);
-    }
-  }
-  for (const len7char of len7) {
+  for (const len7char of digit8) {
     if (!existingMaps.includes(len7char)) {
       origMap.set("g", len7char);
-      console.log("setting g", len7char);
+      // console.log("setting g", len7char);
     }
   }
-  // console.log(origA);/
-  // for (const len5 of wireMap.get(5)) {
-  //   const is3 = len2.every((len2char) => len5.includes(len2char)); // if true this is a 3 digit
+  const flippedMap: Map<string, string> = new Map();
+  for (const key of origMap.keys()) {
+    flippedMap.set(origMap.get(key) as string, key);
+  }
 
-  //   if (is3) {
-  //     for (const len5char of len5) {
-  //       if (!origMap.has(len5char)) {
-  //         origMap.set("g", len5char);
-  //         console.log("setting g");
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
-  // console.log(origMap);
-
-  // for (const len7char of len7) {
-  //   if (!origMap.has(len7char)) {
-  //     origMap.set("e", len7char);
-  //     break;
-  //   }
-  // }
-  // console.log(origMap);
-  return origMap;
+  return flippedMap;
 }
 
-// console.log(entries);
-// const entries = initialState[1];
-
-// initialState.map((entry) => console.log(entry[1]));
-
-("");
 const digitArray: string[] = [
   "abcefg",
   "cf",
@@ -177,17 +151,22 @@ const digitsSplit = digitArray.map((d) => d.split(""));
 for (const entry of entries) {
   let readingString = "";
   const reading = entry[1].map((x) => x.split(""));
-  // console.log(reading);
 
   const digitMap = part2(entry);
-  const readingMapped = reading.map((x) => x.map((y) => digitMap.get(y)));
-  // console.log(readingMapped);
-  // console.log(digitMap);
-  for (let i = 0; i < 10; i++) {
-    const digit = digitsSplit[i];
-    console.log(
-      readingMapped.map((x) => digit.every((d) => readingMapped.includes(x)))
-    );
+  const readingsMapped = reading.map((x) =>
+    x.map((y) => digitMap.get(y) as string)
+  );
+  for (const reading of readingsMapped) {
+    for (let i = 0; i < 10; i++) {
+      const digit = digitsSplit[i];
+      if (reading.length === digit.length) {
+        if (digit.every((char) => reading.includes(char))) {
+          readingString += i;
+        }
+      }
+    }
   }
-  // console.log(readingString);
+  console.log(readingString);
+  sum += parseInt(readingString);
 }
+console.log("total: " + sum);
