@@ -12,7 +12,14 @@ const file: string = fs.readFileSync(inputFile(process.argv[2]), "utf8");
 const depths: number[][] = file
   .split("\n")
   .map((x) => x.split("").map((y) => parseInt(y.trim())));
-console.log(depths);
+
+interface PointObject {
+  x: number;
+  y: number;
+}
+const Point = (x: number, y: number): PointObject => {
+  return { x: x, y: y };
+};
 
 const part1 = (depthMatrix: number[][]) => {
   let sum = 0;
@@ -22,123 +29,105 @@ const part1 = (depthMatrix: number[][]) => {
       let left = 9;
       let up = 9;
       let down = 9;
-      try {
-        right = rowArray[column + 1];
-        right = right === undefined ? 9 : right;
-      } catch {
+      if (column === rowArray.length - 1) {
         right = 9;
+      } else {
+        right = rowArray[column + 1];
       }
-      try {
-        left = rowArray[column - 1];
-        left = left === undefined ? 9 : left;
-      } catch {
+      if (column === 0) {
         left = 9;
+      } else {
+        left = rowArray[column - 1];
       }
-      try {
-        up = depthMatrix[row - 1][column];
-        up = up === undefined ? 9 : up;
-      } catch {
+      if (row === depthMatrix.length - 1) {
         up = 9;
+      } else {
+        up = depthMatrix[row + 1][column];
       }
-      try {
-        down = depthMatrix[row + 1][column];
-        down = down === undefined ? 9 : down;
-      } catch {
+      if (row === 0) {
         down = 9;
+      } else {
+        down = depthMatrix[row - 1][column];
       }
-      console.log("value", value);
-
-      console.log(8, up, 8);
-      console.log(left, value, right);
-      console.log(8, down, 8);
 
       if (value < up && value < down && value < left && value < right) {
-        console.log("hit");
-
-        console.log(value);
         sum += 1 + value;
       }
     }
   }
   return sum;
 };
-interface PointObject {
-  x: number;
-  y: number;
-}
-const Point = (x: number, y: number): PointObject => {
-  return { x: x, y: y };
-};
-const point = Point(1, 1);
+const expand = (depthMatrix: number[][]) => {
+  let pointsHitOverall = new Set();
+  let sumSubArea: number[] = [];
+  for (const [row, rowArr] of depthMatrix.entries()) {
+    for (const [column, value] of rowArr.entries()) {
+      if (
+        !pointsHitOverall.has(column + "," + row) &&
+        depthMatrix[row][column] !== 9
+      ) {
+        let pointsHitRegion = new Set();
+        let expanded = false;
+        pointsHitRegion.add(column + "," + row);
+        let iterationPoints = [Point(column, row)];
+        let points = iterationPoints;
+        do {
+          iterationPoints = [];
+          let pointsAdded = false;
+          expanded = false;
 
-console.log(point);
+          for (const point of points) {
+            const rowArray = depthMatrix[point.y];
+            const row = point.y;
+            const column = point.x;
+            let right = 9;
+            let left = 9;
+            let up = 9;
+            let down = 9;
+            if (!(column === rowArray.length - 1)) {
+              right = rowArray[column + 1];
+            }
+            if (!(column === 0)) {
+              left = rowArray[column - 1];
+            }
+            if (!(row === depthMatrix.length - 1)) {
+              up = depthMatrix[row + 1][column];
+            }
+            if (!(row === 0)) {
+              down = depthMatrix[row - 1][column];
+            }
+            if (left !== 9 && !pointsHitRegion.has(column - 1 + "," + row)) {
+              iterationPoints.push(Point(column - 1, row));
+            }
+            if (right !== 9 && !pointsHitRegion.has(column + 1 + "," + row)) {
+              iterationPoints.push(Point(column + 1, row));
+            }
+            if (up !== 9 && !pointsHitRegion.has(column + "," + (row + 1))) {
+              iterationPoints.push(Point(column, row + 1));
+            }
+            if (down !== 9 && !pointsHitRegion.has(column + "," + (row + 1))) {
+              iterationPoints.push(Point(column, row - 1));
+            }
+          }
+          for (const point of iterationPoints) {
+            if (!pointsHitRegion.has(point.x + "," + point.y)) {
+              pointsHitRegion.add(point.x + "," + point.y);
+              pointsHitOverall.add(point.x + "," + point.y);
+              expanded = true;
+            }
+          }
+          points = iterationPoints;
+        } while (expanded);
 
-const expand = (location: PointObject, depthMatrix: number[][]) => {
-  let sum = 0;
-  let points = [location];
-  let expanded = true;
-  let iterationPoints: PointObject[] = [];
-  while (expanded) {
-    expanded = false;
-    for (const point of points) {
-      const rowArray = depthMatrix[point.y];
-      const row = point.y;
-      const column = point.x;
-      let right = 9;
-      let left = 9;
-      let up = 9;
-      let down = 9;
-      try {
-        right = rowArray[column + 1];
-        right = right === undefined ? 9 : right;
-        if (right !== 9) {
-          iterationPoints.push(Point(row, column + 1));
-          expanded = true;
-        }
-      } catch {
-        right = 9;
+        sumSubArea.push(pointsHitRegion.size);
       }
-      try {
-        left = rowArray[column - 1];
-        left = left === undefined ? 9 : left;
-        if (left !== 9) {
-          iterationPoints.push(Point(row, column - 1));
-          expanded = true;
-        }
-      } catch {
-        left = 9;
-      }
-      try {
-        up = depthMatrix[row - 1][column];
-        up = up === undefined ? 9 : up;
-        if (up !== 9) {
-          iterationPoints.push(Point(row - 1, column));
-          expanded = true;
-        }
-      } catch {
-        up = 9;
-      }
-      try {
-        down = depthMatrix[row + 1][column];
-        down = down === undefined ? 9 : down;
-        if (down !== 9) {
-          iterationPoints.push(Point(row + 1, column));
-          expanded = true;
-        }
-      } catch {
-        down = 9;
-      }
-      // console.log("value", value);
-
-      // console.log(8, up, 8);
-      // console.log(left, value, right);
-      // console.log(8, down, 8);
     }
-    points = iterationPoints;
-    console.log(iterationPoints);
   }
-  return sum;
+  console.log(sumSubArea.sort((a, b) => b - a));
+  return sumSubArea
+    .sort((a, b) => b - a)
+    .slice(0, 3)
+    .reduce((prev, curr) => prev * curr);
 };
 
-console.log(part1(depths));
-expand(Point(4, 4), depths);
+console.log(expand(depths));
