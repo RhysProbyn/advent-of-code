@@ -65,7 +65,6 @@ const expand = (depthMatrix: number[][]) => {
         let points = iterationPoints;
         do {
           iterationPoints = [];
-          let pointsAdded = false;
           expanded = false;
 
           for (const point of points) {
