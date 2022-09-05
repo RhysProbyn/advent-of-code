@@ -29,24 +29,16 @@ const part1 = (depthMatrix: number[][]) => {
       let left = 9;
       let up = 9;
       let down = 9;
-      if (column === rowArray.length - 1) {
-        right = 9;
-      } else {
+      if (!(column === rowArray.length - 1)) {
         right = rowArray[column + 1];
       }
-      if (column === 0) {
-        left = 9;
-      } else {
+      if (!(column === 0)) {
         left = rowArray[column - 1];
       }
-      if (row === depthMatrix.length - 1) {
-        up = 9;
-      } else {
+      if (!(row === depthMatrix.length - 1)) {
         up = depthMatrix[row + 1][column];
       }
-      if (row === 0) {
-        down = 9;
-      } else {
+      if (!(row === 0)) {
         down = depthMatrix[row - 1][column];
       }
 
