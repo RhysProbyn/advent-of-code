@@ -110,9 +110,10 @@ const expand = (depthMatrix: number[][]) => {
             }
           }
           for (const point of iterationPoints) {
-            if (!pointsHitRegion.has(point.x + "," + point.y)) {
-              pointsHitRegion.add(point.x + "," + point.y);
-              pointsHitOverall.add(point.x + "," + point.y);
+            const pointStr = point.x + "," + point.y;
+            if (!pointsHitRegion.has(pointStr)) {
+              pointsHitRegion.add(pointStr);
+              pointsHitOverall.add(pointStr);
               expanded = true;
             }
           }
@@ -130,4 +131,5 @@ const expand = (depthMatrix: number[][]) => {
     .reduce((prev, curr) => prev * curr);
 };
 
+console.log(part1(depths));
 console.log(expand(depths));
