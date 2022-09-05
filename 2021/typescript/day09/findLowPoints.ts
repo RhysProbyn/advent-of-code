@@ -50,7 +50,7 @@ const part1 = (depthMatrix: number[][]) => {
   return sum;
 };
 const expand = (depthMatrix: number[][]) => {
-  let pointsHitOverall = new Set();
+  const pointsHitOverall = new Set();
   let sumSubArea: number[] = [];
   for (const [row, rowArr] of depthMatrix.entries()) {
     for (const [column, value] of rowArr.entries()) {
@@ -58,7 +58,7 @@ const expand = (depthMatrix: number[][]) => {
         !pointsHitOverall.has(column + "," + row) &&
         depthMatrix[row][column] !== 9
       ) {
-        let pointsHitRegion = new Set();
+        const pointsHitRegion = new Set();
         let expanded = false;
         pointsHitRegion.add(column + "," + row);
         let iterationPoints = [Point(column, row)];
