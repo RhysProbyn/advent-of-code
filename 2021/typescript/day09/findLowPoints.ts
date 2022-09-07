@@ -55,12 +55,12 @@ const expand = (depthMatrix: number[][]) => {
   for (const [row, rowArr] of depthMatrix.entries()) {
     for (const [column, value] of rowArr.entries()) {
       if (
-        !pointsHitOverall.has(column + "," + row) &&
+        !pointsHitOverall.has([column, row].toString()) &&
         depthMatrix[row][column] !== 9
       ) {
         const pointsHitRegion = new Set();
         let expanded = false;
-        pointsHitRegion.add(column + "," + row);
+        pointsHitRegion.add([column, row].toString());
         let iterationPoints = [Point(column, row)];
         let points = iterationPoints;
         do {
@@ -87,21 +87,33 @@ const expand = (depthMatrix: number[][]) => {
             if (!(row === 0)) {
               down = depthMatrix[row - 1][column];
             }
-            if (left !== 9 && !pointsHitRegion.has(column - 1 + "," + row)) {
+            if (
+              left !== 9 &&
+              !pointsHitRegion.has([column - 1, row].toString())
+            ) {
               iterationPoints.push(Point(column - 1, row));
             }
-            if (right !== 9 && !pointsHitRegion.has(column + 1 + "," + row)) {
+            if (
+              right !== 9 &&
+              !pointsHitRegion.has([column + 1, row].toString())
+            ) {
               iterationPoints.push(Point(column + 1, row));
             }
-            if (up !== 9 && !pointsHitRegion.has(column + "," + (row + 1))) {
+            if (
+              up !== 9 &&
+              !pointsHitRegion.has([column, row + 1].toString())
+            ) {
               iterationPoints.push(Point(column, row + 1));
             }
-            if (down !== 9 && !pointsHitRegion.has(column + "," + (row + 1))) {
+            if (
+              down !== 9 &&
+              !pointsHitRegion.has([column, row + 1].toString())
+            ) {
               iterationPoints.push(Point(column, row - 1));
             }
           }
           for (const point of iterationPoints) {
-            const pointStr = point.x + "," + point.y;
+            const pointStr = [point.x, point.y].toString();
             if (!pointsHitRegion.has(pointStr)) {
               pointsHitRegion.add(pointStr);
               pointsHitOverall.add(pointStr);
@@ -109,6 +121,8 @@ const expand = (depthMatrix: number[][]) => {
             }
           }
           points = iterationPoints;
+          console.log(pointsHitRegion);
+          console.log(pointsHitOverall);
         } while (expanded);
 
         sumSubArea.push(pointsHitRegion.size);
