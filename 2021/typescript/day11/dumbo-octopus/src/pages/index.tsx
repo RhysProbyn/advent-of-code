@@ -1,26 +1,25 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import text from "../env/testInput"; // Relative path to your File
-import React, { useState } from "react";
-console.log(text);
+import testInput from "../env/testInput"; // Relative path to your File
+import React, { useState, useEffect } from "react";
+console.log(testInput);
 
-const file: string = text;
-const octopiMatrix: number[][] = file.split("\n").map((x) =>
+const originalMatrix: number[][] = testInput.split("\n").map((x) =>
   x
     .trim()
     .split("")
     .map((y) => y.trim())
     .map((z) => parseInt(z))
 );
-console.log(octopiMatrix);
+// console.log(octopiMatrix);
 const increaseLocation = (matrix: number[][]) => {
-  let increasedMatrix = matrix;
-  for (let y = 0; y < increasedMatrix.length; y++) {
-    const rowArray = increasedMatrix[y]!;
-    for (let x = 0; x < rowArray.length; x++) {
-      increasedMatrix[y]![x]++;
-    }
-  }
+  let increasedMatrix = matrix.map((item) => item.map((i) => i + 1));
+  // for (let y = 0; y < increasedMatrix.length; y++) {
+  //   const rowArray = increasedMatrix[y]!;
+  //   for (let x = 0; x < rowArray.length; x++) {
+  //     increasedMatrix[y]![x]++;
+  //   }
+  // }
   let maxVal = Math.max(...increasedMatrix.flat());
   console.log("increasebeforeflash", increasedMatrix.toString());
 
@@ -32,37 +31,37 @@ const increaseLocation = (matrix: number[][]) => {
         const val = rowArray[x]!;
         console.log("val", val);
         if (val > 9) {
-          // RM
           if (x !== rowArray.length - 1) {
+            // RM
             increasedMatrix[y]![x + 1]++;
+            // RB
+            if (y !== increasedMatrix.length - 1) {
+              increasedMatrix[y + 1]![x + 1]++;
+            }
+            // RT
+            if (y !== 0) {
+              increasedMatrix[y - 1]![x + 1]++;
+            }
           }
-          // RB
-          if (x !== rowArray.length - 1 && y !== increasedMatrix.length - 1) {
-            increasedMatrix[y + 1]![x + 1]++;
+          if (x !== 0) {
+            // LM
+            increasedMatrix[y]![x - 1]++;
+            // LB
+            if (y !== increasedMatrix.length - 1) {
+              increasedMatrix[y + 1]![x - 1]++;
+            }
+            // LT
+            if (y !== 0) {
+              increasedMatrix[y - 1]![x - 1]++;
+            }
           }
           // MB
           if (y !== increasedMatrix.length - 1) {
             increasedMatrix[y + 1]![x]++;
           }
-          // LB
-          if (y !== increasedMatrix.length - 1 && x !== 0) {
-            increasedMatrix[y + 1]![x - 1]++;
-          }
-          // LM
-          if (x !== 0) {
-            increasedMatrix[y]![x - 1]++;
-          }
-          // LT
-          if (x !== 0 && y !== 0) {
-            increasedMatrix[y - 1]![x - 1]++;
-          }
           // MT
           if (y !== 0) {
             increasedMatrix[y - 1]![x]++;
-          }
-          // RT
-          if (x !== rowArray.length - 1 && y !== 0) {
-            increasedMatrix[y - 1]![x + 1]++;
           }
           increasedMatrix[y]![x] = -9999;
         }
@@ -83,39 +82,39 @@ const increaseLocation = (matrix: number[][]) => {
   }
   console.log(increasedMatrix);
 
-  return [increasedMatrix as number[][], flashCount as number];
+  return [increasedMatrix, flashCount];
 };
 
 const Home: NextPage = () => {
-  let initMatrix = new Array();
-  initMatrix = [...octopiMatrix];
-  console.log("initMatrix", initMatrix);
-  const matrixOrig = [...octopiMatrix];
-
-  const [octoMatrix, setOctoMatrix] = useState(initMatrix);
+  const [octoMatrix, setOctoMatrix] = useState(originalMatrix);
   const [iteration, setIteration] = useState(0);
   const [flashCount, setFlashCount] = useState(0);
-  // init()
   const resetState = () => {
-    setOctoMatrix([...octopiMatrix]);
+    console.log("is handleReset being triggered", originalMatrix, octoMatrix);
+    setOctoMatrix(originalMatrix);
+    setIteration(0);
+    setFlashCount(0);
   };
   const handleIterate = () => {
     const increaseResult = increaseLocation(octoMatrix);
     setIteration(iteration + 1);
     setFlashCount(flashCount + (increaseResult[1] as number));
     setOctoMatrix([...(increaseResult[0] as number[][])]);
+    console.log("this shouldnt get called when i click reset");
   };
   const handleReset = () => {
-    let resetMatrix = new Array();
-    console.log("initMatrix", initMatrix);
-    console.log("octopiMatrix", [...octopiMatrix]);
-
-    resetMatrix = [...matrixOrig];
-    console.log("resetMatrix", resetMatrix);
-
     resetState();
   };
-  // setTimeout(handleIterate, 500);
+  const iterate = () => handleIterate();
+  // setInterval(iterate, 1000);
+  // setTimeout(iterate, 1000);
+  // useEffect(() => {
+  //   const timer = setTimeout(iterate, 2000);
+
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, []);
   return (
     <>
       <Head>
@@ -131,43 +130,11 @@ const Home: NextPage = () => {
         <p className="text-2xl text-gray-700">
           Iteration {iteration}, Flash count {flashCount}
         </p>
-        <Button onClick={handleIterate} text={"iterate"} />
         <div>
           <OctupusGrid matrix={octoMatrix} />
         </div>
         <Button onClick={handleReset} text={"reset"} />
-        <div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
-          <TechnologyCard
-            name="NextJS"
-            description="The React framework for production"
-            documentation="https://nextjs.org/"
-          />
-          <TechnologyCard
-            name="TypeScript"
-            description="Strongly typed programming language that builds on JavaScript, giving you better tooling at any scale"
-            documentation="https://www.typescriptlang.org/"
-          />
-          <TechnologyCard
-            name="TailwindCSS"
-            description="Rapidly build modern websites without ever leaving your HTML"
-            documentation="https://tailwindcss.com/"
-          />
-          <TechnologyCard
-            name="tRPC"
-            description="End-to-end typesafe APIs made easy"
-            documentation="https://trpc.io/"
-          />
-          <TechnologyCard
-            name="Next-Auth"
-            description="Authentication for Next.js"
-            documentation="https://next-auth.js.org/"
-          />
-          <TechnologyCard
-            name="Prisma"
-            description="Build data-driven JavaScript & TypeScript apps in less time"
-            documentation="https://www.prisma.io/docs/"
-          />
-        </div>
+        <Button onClick={iterate} text={"iterate"} />
       </main>
     </>
   );
@@ -186,42 +153,15 @@ const Button = ({ onClick, text }: ButtonProps) => (
 
 export default Home;
 
-type TechnologyCardProps = {
-  name: string;
-  description: string;
-  documentation: string;
-};
-
-const TechnologyCard = ({
-  name,
-  description,
-  documentation,
-}: TechnologyCardProps) => {
-  return (
-    <section className="flex flex-col justify-center p-6 duration-500 border-2 border-gray-500 shadow-xl motion-safe:hover:scale-105">
-      <h2 className="text-lg text-gray-700">{name}</h2>
-      <p className="text-sm text-gray-600">{description}</p>
-      <a
-        className="mt-3 text-sm underline text-violet-500 decoration-dotted underline-offset-2"
-        href={documentation}
-        target="_blank"
-        rel="noreferrer"
-      >
-        Documentation
-      </a>
-    </section>
-  );
-};
-
 type OctopusProps = {
   energyLevel: number;
 };
 
 const Octopus = ({ energyLevel }: OctopusProps) => {
   return (
-    <div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
+    <li className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
       {energyLevel}
-    </div>
+    </li>
   );
 };
 
