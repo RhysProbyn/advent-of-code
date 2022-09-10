@@ -120,6 +120,7 @@ const Home: NextPage = () => {
     setOctoMatrix(parseInputMatrix(inputMatrixString));
     setIteration(0);
     setFlashCount(0);
+    setIterating(false);
   };
   const handleIterate = () => {
     if (iterating && iteration < numberOfIterations) {
