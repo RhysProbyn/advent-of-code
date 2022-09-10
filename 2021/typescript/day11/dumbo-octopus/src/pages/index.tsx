@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import testInput from "../env/testInput"; // Relative path to your File
 import React, { useState, useEffect } from "react";
 // import { time } from "console";
 // console.log(testInput);
